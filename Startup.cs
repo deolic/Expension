@@ -8,6 +8,7 @@ using Expension.Database.Repositories.Expense;
 using Expension.Database.Repositories.Item;
 using Expension.Database.Repositories.Shopping;
 using Expension.Database.Repositories.User;
+using Expension.Services.Item;
 
 
 namespace Expension
@@ -32,6 +33,8 @@ namespace Expension
             services.AddScoped<IItemRepository, ItemRepository>();
             services.AddScoped<IShoppingRepository, ShoppingRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+
+            services.AddScoped<IItemService, ItemService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
