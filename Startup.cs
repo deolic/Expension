@@ -1,15 +1,15 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Expension.Database;
+using Expension.Database.Repositories.Expense;
+using Expension.Database.Repositories.Item;
+using Expension.Database.Repositories.Shopping;
+using Expension.Database.Repositories.User;
+using Expension.Services.Item;
+
 
 namespace Expension
 {
@@ -26,6 +26,15 @@ namespace Expension
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services.AddDbContext<ExpensionDataContext>();
+
+            services.AddScoped<IExpenseRepository, ExpenseRepository>();
+            services.AddScoped<IItemRepository, ItemRepository>();
+            services.AddScoped<IShoppingRepository, ShoppingRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+
+            services.AddScoped<IItemService, ItemService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
