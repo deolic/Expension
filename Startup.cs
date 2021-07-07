@@ -4,11 +4,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Expension.Database;
+using Expension.Database.Repositories.BoughtItem;
 using Expension.Database.Repositories.Expense;
 using Expension.Database.Repositories.Item;
-using Expension.Database.Repositories.Shopping;
 using Expension.Database.Repositories.User;
+using Expension.Services.BoughtItem;
+using Expension.Services.Expense;
 using Expension.Services.Item;
+using Expension.Services.User;
 
 
 namespace Expension
@@ -29,12 +32,14 @@ namespace Expension
 
             services.AddDbContext<ExpensionDataContext>();
 
-            services.AddScoped<IExpenseRepository, ExpenseRepository>();
             services.AddScoped<IItemRepository, ItemRepository>();
-            services.AddScoped<IShoppingRepository, ShoppingRepository>();
+            services.AddScoped<IBoughtItemRepository, BoughtItemRepository>();
+            services.AddScoped<IExpenseRepository, ExpenseRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
 
             services.AddScoped<IItemService, ItemService>();
+            services.AddScoped<IBoughtItemService, BoughtItemService>();
+            services.AddScoped<IExpenseService, ExpenseService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
