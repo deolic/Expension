@@ -3,16 +3,14 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Expension.Database.Models
 {
-    public class Expense
+    public abstract class Expense
     {
         public int ExpenseId { get; set; }
 
-        public float Price { get; set; }
+        public DateTime ShoppingDate { get; set; }
 
         [Required]
-        public virtual Shopping Shopping { get; set; }
-
-        [Required]
-        public virtual Item Item { get; set; }
+        public virtual User User { get; set; }
+        public int UserId { get; set; }
     }
 }
