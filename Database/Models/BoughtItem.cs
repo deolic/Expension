@@ -11,5 +11,11 @@ namespace Expension.Database.Models
         public int ItemId { get; set; }
 
         public float Price { get; set; }
+
+        public Shopping Shopping { get; set; }
+        public int? ShoppingId { get; set; }
+
+        public IndividualExpense IndividualExpense { get; set; }
+        public int? IndividualExpenseId { get; set; }
     }
 }

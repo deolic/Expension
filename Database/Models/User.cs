@@ -15,6 +15,6 @@ namespace Expension.Database.Models
 
         public bool IsAdmin { get; set; }
 
-        public virtual ICollection<Shopping> Shoppings { get; set; }
+        public virtual ICollection<Expense> Expenses { get; set; }
     }
 }
