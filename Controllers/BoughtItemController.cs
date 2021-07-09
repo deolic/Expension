@@ -30,13 +30,13 @@ namespace Expension.Controllers
             return boughtItem != null ? (ActionResult<BoughtItemFullDataDto>) boughtItem : NotFound(new { message = "There is no bought item with such id"});
         }
 
-        // POST: api/bought-items
-        [HttpPost]
-        public ActionResult PostBoughtItem(BoughtItemAddDto boughtItem)
+        // POST: api/bought-items/{type}
+        [HttpPost("{type}")]
+        public ActionResult PostBoughtItem(BoughtItemAddDto boughtItem, string type)
         {
-            return _boughtItemService.AddBoughtItem(boughtItem)
+            return _boughtItemService.AddBoughtItem(boughtItem, type)
                 ? NoContent()
-                : (ActionResult) BadRequest(new {message = ""});
+                : (ActionResult) BadRequest(new {message = "Wrong type of expense" });
         }
 
         // DELETE: api/bought-items/{id}

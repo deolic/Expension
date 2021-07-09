@@ -9,7 +9,7 @@ namespace Expension.Services.BoughtItem
 
         BoughtItemFullDataDto GetBoughtItemById(int id);
 
-        bool AddBoughtItem(BoughtItemAddDto item);
+        bool AddBoughtItem(BoughtItemAddDto item, string type);
 
         bool DeleteBoughtItem(int id);
     }

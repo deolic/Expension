@@ -20,7 +20,9 @@ namespace Expension.Services.BoughtItem
             {
                 BoughtItemId = bi.BoughtItemId,
                 ItemId = bi.ItemId,
-                Price = bi.Price
+                Price = bi.Price,
+                IndividualExpenseId = bi.IndividualExpenseId,
+                ShoppingId = bi.ShoppingId
             }).ToList();
             return boughtItems;
         }
@@ -37,17 +39,37 @@ namespace Expension.Services.BoughtItem
             {
                 BoughtItemId = boughtItem.BoughtItemId,
                 ItemId = boughtItem.ItemId,
-                Price = boughtItem.Price
+                Price = boughtItem.Price,
+                IndividualExpenseId = boughtItem.IndividualExpenseId,
+                ShoppingId = boughtItem.ShoppingId
             };
         }
 
-        public bool AddBoughtItem(BoughtItemAddDto boughtItemData)
+        public bool AddBoughtItem(BoughtItemAddDto boughtItemData, string type)
         {
-            var boughtItem = new Database.Models.BoughtItem
+            Database.Models.BoughtItem boughtItem;
+            switch (type)
             {
-                ItemId = boughtItemData.ItemId,
-                Price = boughtItemData.Price
-            };
+                case "individual":
+                    boughtItem = new Database.Models.BoughtItem
+                    {
+                        ItemId = boughtItemData.ItemId,
+                        Price = boughtItemData.Price,
+                        IndividualExpenseId = boughtItemData.ExpenseId
+                    };
+                    break;
+                case "shopping":
+
+                    boughtItem = new Database.Models.BoughtItem
+                    {
+                        ItemId = boughtItemData.ItemId,
+                        Price = boughtItemData.Price,
+                        ShoppingId = boughtItemData.ExpenseId
+                    };
+                    break;
+                default:
+                    return false;
+            }
             _boughtItemRepository.Create(boughtItem);
             _boughtItemRepository.Save();
             return true;
