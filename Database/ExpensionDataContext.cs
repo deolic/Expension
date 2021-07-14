@@ -18,21 +18,8 @@ namespace Expension.Database
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<Expense>()
-                .ToTable("Expenses")
-                .HasDiscriminator<string>("ExpenseType")
-                .HasValue<IndividualExpense>("Individual")
-                .HasValue<Shopping>("Shopping");
-
-            builder.Entity<BoughtItem>()
-                .HasOne<Shopping>(bi => bi.Shopping)
-                .WithMany(s => s.BoughtItems)
-                .HasForeignKey(bi => bi.ShoppingId);
-
-            builder.Entity<BoughtItem>()
-                .HasOne<IndividualExpense>(bi => bi.IndividualExpense)
-                .WithOne(ie => ie.BoughtItem)
-                .HasForeignKey<BoughtItem>(bi => bi.IndividualExpenseId);
+            builder.Entity<IndividualExpense>().ToTable("IndividualExpenses");
+            builder.Entity<Shopping>().ToTable("Shoppings");
         }
     }
 }
