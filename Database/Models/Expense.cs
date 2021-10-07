@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Expension.Database.Models
 {
-    public abstract class Expense
+    public class Expense
     {
         public int ExpenseId { get; set; }
 
@@ -12,5 +13,7 @@ namespace Expension.Database.Models
         [Required]
         public virtual User User { get; set; }
         public int UserId { get; set; }
+
+        public virtual ICollection<BoughtItem> BoughtItems { get; set; }
     }
 }

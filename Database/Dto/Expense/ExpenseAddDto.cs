@@ -4,9 +4,9 @@ namespace Expension.Database.Dto.Expense
 {
     public class ExpenseAddDto
     {
-        public ExpenseAddDto(DateTime shoppingDate)
+        public ExpenseAddDto(DateTime date)
         {
-            ShoppingDate = shoppingDate;
+            Date = date;
         }
 
         public ExpenseAddDto()
@@ -14,6 +14,6 @@ namespace Expension.Database.Dto.Expense
 
         }
 
-        public DateTime ShoppingDate { get; set; }
+        public DateTime Date { get; set; }
     }
 }

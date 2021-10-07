@@ -17,54 +17,35 @@ namespace Expension.Services.BoughtItem
         public List<BoughtItemFullDataDto> GetBoughtItems()
         {
             var boughtItems = _boughtItemRepository.FindAll().Select(bi => new BoughtItemFullDataDto(
-                bi.BoughtItemId, bi.ItemId, bi.Price, bi.ShoppingId, bi.IndividualExpenseId)).ToList();
+                bi.BoughtItemId, bi.ItemId, bi.Price, bi.ExpenseId)).ToList();
             return boughtItems;
         }
 
         public BoughtItemFullDataDto GetBoughtItemById(int id)
         {
             var boughtItem = _boughtItemRepository.FindSingleByCondition(bi => bi.BoughtItemId == id);
-            if (boughtItem == null)
-            {
-                return null;
-            }
-
-            return new BoughtItemFullDataDto(boughtItem.BoughtItemId, boughtItem.ItemId, boughtItem.Price,
-                boughtItem.ShoppingId, boughtItem.IndividualExpenseId);
+            return boughtItem == null
+                ? null
+                : new BoughtItemFullDataDto(boughtItem.BoughtItemId, boughtItem.ItemId, boughtItem.Price,
+                    boughtItem.ExpenseId);
         }
 
-        public bool AddBoughtItem(BoughtItemAddDto boughtItemData, string type)
+        public bool AddBoughtItem(BoughtItemAddDto boughtItemData)
         {
-            Database.Models.BoughtItem boughtItem;
-            switch (type)
+            var boughtItem = new Database.Models.BoughtItem
             {
-                case "individual":
-                    boughtItem = new Database.Models.BoughtItem
-                    {
-                        ItemId = boughtItemData.ItemId,
-                        Price = boughtItemData.Price,
-                        IndividualExpenseId = boughtItemData.ExpenseId
-                    };
-                    break;
-                case "shopping":
-                    boughtItem = new Database.Models.BoughtItem
-                    {
-                        ItemId = boughtItemData.ItemId,
-                        Price = boughtItemData.Price,
-                        ShoppingId = boughtItemData.ExpenseId
-                    };
-                    break;
-                default:
-                    return false;
-            }
+                ItemId = boughtItemData.ItemId,
+                Price = boughtItemData.Price,
+                ExpenseId = boughtItemData.ExpenseId
+            };
             _boughtItemRepository.Create(boughtItem);
             _boughtItemRepository.Save();
             return true;
         }
 
-        public bool DeleteBoughtItem(int id)
+        public bool DeleteBoughtItem(int id, int userId)
         {
-            var boughtItem = _boughtItemRepository.FindSingleByCondition(bi => bi.BoughtItemId == id);
+            var boughtItem = _boughtItemRepository.FindSingleByCondition(bi => bi.BoughtItemId == id && bi.Expense.UserId == userId);
             if (boughtItem == null)
             {
                 return false;

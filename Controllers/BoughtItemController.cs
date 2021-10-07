@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Security.Claims;
 using Expension.Database.Dto.BoughtItem;
 using Expension.Services.BoughtItem;
+using Expension.Utility;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 
 namespace Expension.Controllers
 {
@@ -11,9 +14,11 @@ namespace Expension.Controllers
     public class BoughtItemController : ControllerBase
     {
         private readonly IBoughtItemService _boughtItemService;
-        public BoughtItemController(IBoughtItemService boughtItemService)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public BoughtItemController(IBoughtItemService boughtItemService, IHttpContextAccessor httpContextAccessor)
         {
             _boughtItemService = boughtItemService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         // GET: api/bought-items
@@ -40,7 +45,7 @@ namespace Expension.Controllers
         {
             return _boughtItemService.AddBoughtItem(boughtItem)
                 ? NoContent()
-                : (ActionResult) BadRequest();
+                : (ActionResult) BadRequest(new { message = "Wrong expense id or there is no expense with such id for this user" });
         }
 
         // DELETE: api/bought-items/{id}
@@ -48,7 +53,10 @@ namespace Expension.Controllers
         [HttpDelete("{id}")]
         public ActionResult DeleteBoughtItem(int id)
         {
-            return _boughtItemService.DeleteBoughtItem(id) ? NoContent() : (ActionResult) BadRequest(new { message = "There is no bought item with such id" });
+            if (_httpContextAccessor.HttpContext == null) return NotFound();
+            var userId = StringConversion.ConvertToInt(_httpContextAccessor.HttpContext.User
+                .FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            return _boughtItemService.DeleteBoughtItem(id, userId) ? NoContent() : (ActionResult) BadRequest(new { message = "There is no bought item with such id for this user" });
         }
     }
 }

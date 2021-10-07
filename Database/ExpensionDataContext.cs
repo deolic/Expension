@@ -14,11 +14,5 @@ namespace Expension.Database
         public DbSet<Item> Items { get; set; }
         public DbSet<BoughtItem> BoughtItems { get; set; }
         public DbSet<User> Users { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            builder.Entity<IndividualExpense>().ToTable("IndividualExpenses");
-            builder.Entity<Shopping>().ToTable("Shoppings");
-        }
     }
 }

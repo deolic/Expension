@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
-using Expension.Database.Dto.Expense.IndividualExpense;
-using Expension.Database.Dto.Expense.Shopping;
-using Expension.Database.Models;
+using Expension.Database.Dto.BoughtItem;
+using Expension.Database.Dto.Expense;
+using Expension.Database.Dto.Item;
 using Expension.Database.Repositories.Expense;
 
 namespace Expension.Services.Expense
@@ -17,80 +16,56 @@ namespace Expension.Services.Expense
             _expenseRepository = expenseRepository;
         }
 
-        public List<IndividualExpenseDisplayedDataDto> GetIndividualExpenses()
+        public List<ExpenseDisplayedDataDto> GetExpenses()
         {
-            var individualExpenses = _expenseRepository.FindAllIndividualExpenses()
-                .Select(ie =>
-                    new IndividualExpenseDisplayedDataDto(ie.ShoppingDate, ie.BoughtItem)).ToList();
-            return individualExpenses;
+            var expenses = _expenseRepository.FindAll()
+                .Select(e =>
+                    new ExpenseDisplayedDataDto(e.ShoppingDate,
+                        e.BoughtItems.Select(bi =>
+                                new BoughtItemDisplayedDto(bi.Price,
+                                    new ItemDisplayedDto(bi.Item.Name, bi.Item.ItemType)))
+                            .ToList())).ToList();
+            return expenses;
         }
 
-        public List<IndividualExpenseDisplayedDataDto> GetIndividualExpensesForUser(int userId)
+        public List<ExpenseDisplayedDataDto> GetExpensesForUser(int userId)
         {
-            var individualExpenses = _expenseRepository.FindIndividualExpensesByCondition(ie => ie.UserId == userId)
-                .Select(ie =>
-                    new IndividualExpenseDisplayedDataDto(ie.ShoppingDate, ie.BoughtItem)).ToList();
-            return individualExpenses;
+            var expenses = _expenseRepository.FindByCondition(e => e.UserId == userId)
+                .Select(e =>
+                    new ExpenseDisplayedDataDto(e.ShoppingDate,
+                        e.BoughtItems.Select(bi =>
+                                new BoughtItemDisplayedDto(bi.Price,
+                                    new ItemDisplayedDto(bi.Item.Name, bi.Item.ItemType)))
+                            .ToList())).ToList();
+            return expenses;
         }
 
-        public IndividualExpenseDisplayedDataDto GetIndividualExpenseById(int id)
+        public ExpenseDisplayedDataDto GetExpenseById(int id)
         {
-            var individualExpense = _expenseRepository.FindSingleIndividualExpenseByCondition(ie => ie.ExpenseId == id);
-            return individualExpense == null
+            var expense = _expenseRepository.FindSingleByCondition(ie => ie.ExpenseId == id);
+            return expense == null
                 ? null
-                : new IndividualExpenseDisplayedDataDto(individualExpense.ShoppingDate, individualExpense.BoughtItem);
+                : new ExpenseDisplayedDataDto(expense.ShoppingDate,
+                    expense.BoughtItems.Select(bi =>
+                            new BoughtItemDisplayedDto(bi.Price, new ItemDisplayedDto(bi.Item.Name, bi.Item.ItemType)))
+                        .ToList());
         }
 
-        public List<ShoppingDisplayedDataDto> GetShoppings()
-        {
-            var shoppings = _expenseRepository.FindAllShoppings().Select(s =>
-                new ShoppingDisplayedDataDto(s.ShoppingDate, s.BoughtItems)).ToList();
-            return shoppings;
-        }
+         public bool AddExpense(DateTime shoppingDate, int userId)
+         {
+             var expense = new Database.Models.Expense
+             {
+                 ShoppingDate = shoppingDate,
+                 UserId = userId
+             };
+             _expenseRepository.Create(expense);
+             _expenseRepository.Save();
+             return true;
+         }
 
-        public List<ShoppingDisplayedDataDto> GetShoppingsForUser(int userId)
+        public bool DeleteExpense(int id, int userId)
         {
-            var shoppings = _expenseRepository.FindShoppingsByCondition(s => s.UserId == userId).Select(s =>
-                new ShoppingDisplayedDataDto(s.ShoppingDate, s.BoughtItems)).ToList();
-            return shoppings;
-        }
-
-        public ShoppingDisplayedDataDto GetShoppingById(int id)
-        {
-            var shopping = _expenseRepository.FindSingleShoppingByCondition(s => s.ExpenseId == id);
-            return shopping == null ? null : new ShoppingDisplayedDataDto(shopping.ShoppingDate, shopping.BoughtItems);
-        }
-
-        public bool AddExpense(DateTime shoppingDate, int userId, string type)
-        {
-            Database.Models.Expense expense;
-            switch (type)
-            {
-                case "individual":
-                    expense = new IndividualExpense()
-                    {
-                        ShoppingDate = shoppingDate.Date,
-                        UserId = userId
-                    };
-                    break;
-                case "shopping":
-                    expense = new Shopping()
-                    {
-                        ShoppingDate = shoppingDate.Date,
-                        UserId = userId
-                    };
-                    break;
-                default:
-                    return false;
-            }
-            _expenseRepository.Create(expense);
-            _expenseRepository.Save();
-            return true;
-        }
-
-        public bool DeleteExpense(int id)
-        {
-            var expense = _expenseRepository.FindSingleByCondition(e => e.ExpenseId == id);
+            var expense = _expenseRepository.FindSingleByCondition(e => e.ExpenseId == id && e.UserId == userId);
             if (expense == null)
             {
                 return false;

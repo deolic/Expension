@@ -6,11 +6,8 @@ namespace Expension.Services.BoughtItem
     public interface IBoughtItemService
     {
         List<BoughtItemFullDataDto> GetBoughtItems();
-
         BoughtItemFullDataDto GetBoughtItemById(int id);
-
-        bool AddBoughtItem(BoughtItemAddDto item, string type);
-
-        bool DeleteBoughtItem(int id);
+        bool AddBoughtItem(BoughtItemAddDto item);
+        bool DeleteBoughtItem(int id, int userId);
     }
 }
