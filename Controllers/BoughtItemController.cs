@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Expension.Database.Dto.BoughtItem;
 using Expension.Services.BoughtItem;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Expension.Controllers
 {
@@ -16,6 +17,7 @@ namespace Expension.Controllers
         }
 
         // GET: api/bought-items
+        [Authorize(Policy = "AdminOnly")]
         [HttpGet]
         public ActionResult<List<BoughtItemFullDataDto>> GetAllBoughtItems()
         {
@@ -23,6 +25,7 @@ namespace Expension.Controllers
         }
 
         // GET: api/bought-items/{id}
+        [Authorize(Policy = "LoggedUserOnly")]
         [HttpGet("{id}")]
         public ActionResult<BoughtItemFullDataDto> GetBoughtItem(int id)
         {
@@ -30,16 +33,18 @@ namespace Expension.Controllers
             return boughtItem != null ? (ActionResult<BoughtItemFullDataDto>) boughtItem : NotFound(new { message = "There is no bought item with such id"});
         }
 
-        // POST: api/bought-items/{type}
-        [HttpPost("{type}")]
-        public ActionResult PostBoughtItem(BoughtItemAddDto boughtItem, string type)
+        // POST: api/bought-items/
+        [Authorize(Policy = "LoggedUserOnly")]
+        [HttpPost]
+        public ActionResult PostBoughtItem(BoughtItemAddDto boughtItem)
         {
-            return _boughtItemService.AddBoughtItem(boughtItem, type)
+            return _boughtItemService.AddBoughtItem(boughtItem)
                 ? NoContent()
-                : (ActionResult) BadRequest(new {message = "Wrong type of expense" });
+                : (ActionResult) BadRequest();
         }
 
         // DELETE: api/bought-items/{id}
+        [Authorize(Policy = "LoggedUserOnly")]
         [HttpDelete("{id}")]
         public ActionResult DeleteBoughtItem(int id)
         {

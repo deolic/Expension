@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Expension.Database.Dto.Expense;
 using Expension.Database.Dto.Expense.IndividualExpense;
 using Expension.Database.Dto.Expense.Shopping;
@@ -14,6 +15,6 @@ namespace Expension.Services.Expense
         List<ShoppingDisplayedDataDto> GetShoppingsForUser(int userId);
         ShoppingDisplayedDataDto GetShoppingById(int id);
         bool DeleteExpense(int id);
-        bool AddExpense(ExpenseAddDto expenseData, string type);
+        bool AddExpense(DateTime shoppingDate, int userId, string type);
     }
 }

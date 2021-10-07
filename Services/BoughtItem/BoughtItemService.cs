@@ -16,14 +16,8 @@ namespace Expension.Services.BoughtItem
 
         public List<BoughtItemFullDataDto> GetBoughtItems()
         {
-            var boughtItems = _boughtItemRepository.FindAll().Select(bi => new BoughtItemFullDataDto
-            {
-                BoughtItemId = bi.BoughtItemId,
-                ItemId = bi.ItemId,
-                Price = bi.Price,
-                IndividualExpenseId = bi.IndividualExpenseId,
-                ShoppingId = bi.ShoppingId
-            }).ToList();
+            var boughtItems = _boughtItemRepository.FindAll().Select(bi => new BoughtItemFullDataDto(
+                bi.BoughtItemId, bi.ItemId, bi.Price, bi.ShoppingId, bi.IndividualExpenseId)).ToList();
             return boughtItems;
         }
 
@@ -35,14 +29,8 @@ namespace Expension.Services.BoughtItem
                 return null;
             }
 
-            return new BoughtItemFullDataDto
-            {
-                BoughtItemId = boughtItem.BoughtItemId,
-                ItemId = boughtItem.ItemId,
-                Price = boughtItem.Price,
-                IndividualExpenseId = boughtItem.IndividualExpenseId,
-                ShoppingId = boughtItem.ShoppingId
-            };
+            return new BoughtItemFullDataDto(boughtItem.BoughtItemId, boughtItem.ItemId, boughtItem.Price,
+                boughtItem.ShoppingId, boughtItem.IndividualExpenseId);
         }
 
         public bool AddBoughtItem(BoughtItemAddDto boughtItemData, string type)
@@ -59,7 +47,6 @@ namespace Expension.Services.BoughtItem
                     };
                     break;
                 case "shopping":
-
                     boughtItem = new Database.Models.BoughtItem
                     {
                         ItemId = boughtItemData.ItemId,

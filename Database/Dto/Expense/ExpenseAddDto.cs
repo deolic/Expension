@@ -4,10 +4,9 @@ namespace Expension.Database.Dto.Expense
 {
     public class ExpenseAddDto
     {
-        public ExpenseAddDto(DateTime shoppingDate, int userId)
+        public ExpenseAddDto(DateTime shoppingDate)
         {
             ShoppingDate = shoppingDate;
-            UserId = userId;
         }
 
         public ExpenseAddDto()
@@ -16,7 +15,5 @@ namespace Expension.Database.Dto.Expense
         }
 
         public DateTime ShoppingDate { get; set; }
-
-        public int UserId { get; set; }
     }
 }

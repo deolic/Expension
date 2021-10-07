@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Expension.Database.Dto.Item;
 using Expension.Services.Item;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Expension.Controllers
 {
@@ -31,6 +32,7 @@ namespace Expension.Controllers
         }
 
         // POST: api/items
+        [Authorize(Policy = "AdminOnly")]
         [HttpPost]
         public ActionResult PostItem(ItemAddDto item)
         {
@@ -38,6 +40,7 @@ namespace Expension.Controllers
         }
 
         // DELETE: api/items/{id}
+        [Authorize(Policy = "AdminOnly")]
         [HttpDelete("{id}")]
         public ActionResult DeleteItem(int id)
         {

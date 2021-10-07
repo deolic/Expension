@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using Expension.Database.Dto.Expense;
+
 using Expension.Database.Dto.Expense.IndividualExpense;
 using Expension.Database.Dto.Expense.Shopping;
 using Expension.Database.Models;
@@ -60,7 +61,7 @@ namespace Expension.Services.Expense
             return shopping == null ? null : new ShoppingDisplayedDataDto(shopping.ShoppingDate, shopping.BoughtItems);
         }
 
-        public bool AddExpense(ExpenseAddDto expenseData, string type)
+        public bool AddExpense(DateTime shoppingDate, int userId, string type)
         {
             Database.Models.Expense expense;
             switch (type)
@@ -68,15 +69,15 @@ namespace Expension.Services.Expense
                 case "individual":
                     expense = new IndividualExpense()
                     {
-                        ShoppingDate = expenseData.ShoppingDate.Date,
-                        UserId = expenseData.UserId
+                        ShoppingDate = shoppingDate.Date,
+                        UserId = userId
                     };
                     break;
                 case "shopping":
                     expense = new Shopping()
                     {
-                        ShoppingDate = expenseData.ShoppingDate.Date,
-                        UserId = expenseData.UserId
+                        ShoppingDate = shoppingDate.Date,
+                        UserId = userId
                     };
                     break;
                 default:
