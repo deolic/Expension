@@ -18,40 +18,39 @@ namespace Expension.Services.Expense
 
         public List<ExpenseDisplayedDataDto> GetExpenses()
         {
-            var expenses = _expenseRepository.FindAll()
+            var expenses = _expenseRepository.FindAll().OrderBy(e => e.ShoppingDate)
                 .Select(e =>
-                    new ExpenseDisplayedDataDto(e.ShoppingDate,
+                    new ExpenseDisplayedDataDto(e.ExpenseId, e.ShoppingDate,
                         e.BoughtItems.Select(bi =>
-                                new BoughtItemDisplayedDto(bi.Price,
-                                    new ItemDisplayedDto(bi.Item.Name, bi.Item.ItemType)))
-                            .ToList())).ToList();
+                                new BoughtItemDisplayedDto(bi.BoughtItemId, bi.Price,
+                                    new ItemDisplayedDto(bi.Item.Name, bi.Item.ItemType))).ToList())).ToList();
             return expenses;
         }
 
         public List<ExpenseDisplayedDataDto> GetExpensesForUser(int userId)
         {
-            var expenses = _expenseRepository.FindByCondition(e => e.UserId == userId)
+            var expenses = _expenseRepository.FindByCondition(e => e.UserId == userId).OrderBy(e => e.ShoppingDate)
                 .Select(e =>
-                    new ExpenseDisplayedDataDto(e.ShoppingDate,
+                    new ExpenseDisplayedDataDto(e.ExpenseId, e.ShoppingDate,
                         e.BoughtItems.Select(bi =>
-                                new BoughtItemDisplayedDto(bi.Price,
-                                    new ItemDisplayedDto(bi.Item.Name, bi.Item.ItemType)))
-                            .ToList())).ToList();
+                                new BoughtItemDisplayedDto(bi.BoughtItemId, bi.Price,
+                                    new ItemDisplayedDto(bi.Item.Name, bi.Item.ItemType))).ToList())).ToList();
             return expenses;
         }
 
         public ExpenseDisplayedDataDto GetExpenseById(int id)
         {
-            var expense = _expenseRepository.FindSingleByCondition(ie => ie.ExpenseId == id);
+            var expense = _expenseRepository.FindSingleByCondition(e => e.ExpenseId == id);
+            var boughtItems = _expenseRepository.FindByCondition(e => e.ExpenseId == id)
+                .SelectMany(e => e.BoughtItems.Select(bi =>
+                    new BoughtItemDisplayedDto(bi.BoughtItemId, bi.Price, new ItemDisplayedDto(bi.Item.Name, bi.Item.ItemType))))
+                .ToList();
             return expense == null
                 ? null
-                : new ExpenseDisplayedDataDto(expense.ShoppingDate,
-                    expense.BoughtItems.Select(bi =>
-                            new BoughtItemDisplayedDto(bi.Price, new ItemDisplayedDto(bi.Item.Name, bi.Item.ItemType)))
-                        .ToList());
+                : new ExpenseDisplayedDataDto(expense.ExpenseId, expense.ShoppingDate, boughtItems);
         }
 
-         public bool AddExpense(DateTime shoppingDate, int userId)
+        public bool AddExpense(DateTime shoppingDate, int userId)
          {
              var expense = new Database.Models.Expense
              {

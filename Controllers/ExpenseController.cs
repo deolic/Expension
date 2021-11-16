@@ -29,16 +29,16 @@ namespace Expension.Controllers
             return _expenseService.GetExpenses();
         }
 
-        //// GET api/expenses/{id}
-        //[Authorize(Policy = "LoggedUserOnly")]
-        //[HttpGet("{id}")]
-        //public ActionResult<ExpenseDisplayedDataDto> GetExpenseById(int id)
-        //{
-        //    var expense = _expenseService.GetExpenseById(id);
-        //    return expense != null
-        //        ? (ActionResult<ExpenseDisplayedDataDto>) expense
-        //        : NotFound(new { message = "There is no expense with such id" });
-        //}
+        // GET api/expenses/{id}
+        [Authorize(Policy = "LoggedUserOnly")]
+        [HttpGet("{id}")]
+        public ActionResult<ExpenseDisplayedDataDto> GetExpenseById(int id)
+        {
+           var expense = _expenseService.GetExpenseById(id);
+           return expense != null
+               ? (ActionResult<ExpenseDisplayedDataDto>) expense
+               : NotFound(new { message = "There is no expense with such id" });
+        }
 
         // GET api/expenses/user
         [Authorize(Policy = "LoggedUserOnly")]

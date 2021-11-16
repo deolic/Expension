@@ -6,8 +6,9 @@ namespace Expension.Database.Dto.Expense
 {
     public class ExpenseDisplayedDataDto
     {
-        public ExpenseDisplayedDataDto(DateTime date, ICollection<BoughtItemDisplayedDto> boughtItems)
+        public ExpenseDisplayedDataDto(int expenseId, DateTime date, ICollection<BoughtItemDisplayedDto> boughtItems)
         {
+            ExpenseId = expenseId;
             Date = date;
             BoughtItems = boughtItems;
         }
@@ -16,6 +17,7 @@ namespace Expension.Database.Dto.Expense
         {
 
         }
+        public int ExpenseId { get; set; }
 
         public DateTime Date { get; set; }
 

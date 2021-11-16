@@ -51,7 +51,7 @@ namespace Expension.Services.User
                     new Claim(ClaimTypes.NameIdentifier, userData.UserId.ToString()),
                     new Claim(ClaimTypes.Role, userData.IsAdmin ? "admin" : "user")
                 }),
-                Expires = System.DateTime.UtcNow.AddHours(1000), // set it to 1
+                Expires = System.DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["JWT:Key"])),
                     SecurityAlgorithms.HmacSha256Signature)

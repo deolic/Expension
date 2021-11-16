@@ -4,8 +4,9 @@ namespace Expension.Database.Dto.BoughtItem
 {
     public class BoughtItemDisplayedDto
     {
-        public BoughtItemDisplayedDto(float price, ItemDisplayedDto item)
+        public BoughtItemDisplayedDto(int boughtItemId, float price, ItemDisplayedDto item)
         {
+            BoughtItemId = boughtItemId;
             Price = price;
             Name = item.Name;
             ItemType = item.ItemType;
@@ -14,7 +15,7 @@ namespace Expension.Database.Dto.BoughtItem
         public BoughtItemDisplayedDto()
         {
         }
-
+        public int BoughtItemId { get; set; }
         public float Price { get; set; }
         public string Name { get; set; }
         public string ItemType { get; set; }
