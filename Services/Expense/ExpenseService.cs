@@ -29,7 +29,7 @@ namespace Expension.Services.Expense
 
         public List<ExpenseDisplayedDataDto> GetExpensesForUser(int userId)
         {
-            var expenses = _expenseRepository.FindByCondition(e => e.UserId == userId).OrderBy(e => e.ShoppingDate)
+            var expenses = _expenseRepository.FindByCondition(e => e.UserId == userId).OrderByDescending(e => e.ShoppingDate)
                 .Select(e =>
                     new ExpenseDisplayedDataDto(e.ExpenseId, e.ShoppingDate,
                         e.BoughtItems.Select(bi =>
