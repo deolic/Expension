@@ -1,3 +1,4 @@
+using System;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Builder;
@@ -19,7 +20,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using VueCliMiddleware;
-
+using System.Threading.Tasks;
 
 namespace Expension
 {
@@ -35,12 +36,23 @@ namespace Expension
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder =>
+                {
+                    builder.SetIsOriginAllowed(origin =>
+                    {
+                        var host = new Uri(origin).Host;
+                        return host == "localhost" || host ==  "localhost:8080";
+                    }).AllowAnyMethod().AllowAnyHeader();
+                    // builder.SetIsOriginAllowed(origin => new Uri(origin).Host == "expension.azurewebsites.net");
+                });
+            });
+
             services.AddControllers();
-
+            var dupa = Configuration.GetValue<String>("ASPNETCORE_ConnectionString");
             services.AddDbContext<ExpensionDataContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("SqlServerConnectionString")));
-
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+                options.UseSqlServer(Configuration.GetValue<String>("ASPNETCORE_ConnectionString")));
 
             services.AddScoped<IItemRepository, ItemRepository>();
             services.AddScoped<IBoughtItemRepository, BoughtItemRepository>();
@@ -55,10 +67,12 @@ namespace Expension
             services.AddControllers().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "Expension.Front/dist";
-            });
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            //services.AddSpaStaticFiles(configuration =>
+            //{
+            //    configuration.RootPath = "Expension.Front/dist";
+            //});
 
             services.AddAuthentication(options => {
                     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -85,18 +99,23 @@ namespace Expension
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ExpensionDataContext dataContext)
         {
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
+            // dataContext.Database.Migrate();
+
             app.UseHttpsRedirection();
 
-            app.UseSpaStaticFiles();
+            //app.UseSpaStaticFiles();
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthentication();
 
@@ -104,17 +123,21 @@ namespace Expension
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapGet("/", async context =>
+                {
+                    await context.Response.WriteAsync("dupa");
+                });
                 endpoints.MapControllers();
             });
 
-            app.UseSpa(spa =>
-            {
-                spa.Options.SourcePath = "../Expension.Front";
-                if (env.IsDevelopment())
-                {
-                    spa.UseVueCli("serve", 8080);
-                }
-            });
+            //app.UseSpa(spa =>
+            //{
+            //    spa.Options.SourcePath = "../Expension.Front";
+            //    if (env.IsDevelopment())
+            //    {
+            //        spa.UseVueCli("serve", 8080);
+            //    }
+            //});
         }
     }
 }
