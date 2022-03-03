@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Expension.Database.Models
@@ -7,12 +8,12 @@ namespace Expension.Database.Models
     {
         public int ExpenseId { get; set; }
 
-        public float Price { get; set; }
+        public DateTime ShoppingDate { get; set; }
 
         [Required]
-        public virtual Shopping Shopping { get; set; }
+        public virtual User User { get; set; }
+        public int UserId { get; set; }
 
-        [Required]
-        public virtual Item Item { get; set; }
+        public virtual ICollection<BoughtItem> BoughtItems { get; set; }
     }
 }

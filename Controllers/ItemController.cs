@@ -1,13 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Expension.Database.Dto.Item;
-using Expension.Database.Models;
-using Expension.Database.Repositories.Item;
 using Expension.Services.Item;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Expension.Controllers
 {
@@ -23,7 +18,7 @@ namespace Expension.Controllers
 
         // GET: api/items
         [HttpGet]
-        public ActionResult<List<ItemFullDataDtoDto>> GetAll()
+        public ActionResult<List<ItemFullDataDtoDto>> GetAllItems()
         {
             return _itemService.GetItems();
         }
@@ -37,6 +32,7 @@ namespace Expension.Controllers
         }
 
         // POST: api/items
+        [Authorize(Policy = "AdminOnly")]
         [HttpPost]
         public ActionResult PostItem(ItemAddDto item)
         {
@@ -44,6 +40,7 @@ namespace Expension.Controllers
         }
 
         // DELETE: api/items/{id}
+        [Authorize(Policy = "AdminOnly")]
         [HttpDelete("{id}")]
         public ActionResult DeleteItem(int id)
         {

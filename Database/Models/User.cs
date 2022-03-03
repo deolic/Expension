@@ -7,14 +7,14 @@ namespace Expension.Database.Models
     {
         public int UserId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Email is required!")]
         public string Email { get; set; }
 
-        [Required]
-        public string Password { get; set; }
+        [Required(ErrorMessage = "Password is required!")]
+        public string PasswordHash { get; set; }
 
         public bool IsAdmin { get; set; }
 
-        public virtual ICollection<Shopping> Shoppings { get; set; }
+        public virtual ICollection<Expense> Expenses { get; set; }
     }
 }

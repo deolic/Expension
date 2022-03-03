@@ -7,7 +7,7 @@ namespace Expension.Database.Repositories
 {
     public abstract class BaseRepository<T> : IBaseRepository<T> where T : class
     {
-        private readonly ExpensionDataContext _context;
+        protected readonly ExpensionDataContext _context;
 
         protected BaseRepository(ExpensionDataContext context)
         {

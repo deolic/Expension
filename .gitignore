@@ -387,5 +387,5 @@ FodyWeavers.xsd
 .idea/
 *.sln.iml
 
-Expension.csproj
 Migrations/
+/Properties/ServiceDependencies/local/mssql1.arm.json
