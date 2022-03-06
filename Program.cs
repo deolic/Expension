@@ -15,8 +15,14 @@ namespace Expension
             Host.CreateDefaultBuilder(args)
             .ConfigureAppConfiguration((hostingContext, config) => 
             {
-                config.AddEnvironmentVariables();
-                config.AddUserSecrets("e9d34c93-4ae8-47e7-a213-f997239de173");
+                if (hostingContext.HostingEnvironment.IsDevelopment())
+                {
+                    config.AddUserSecrets("e9d34c93-4ae8-47e7-a213-f997239de173");
+                }
+                else
+                {
+                    config.AddEnvironmentVariables();
+                }
             })
             .ConfigureWebHostDefaults(webBuilder =>
             {

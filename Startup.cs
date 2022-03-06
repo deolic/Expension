@@ -19,8 +19,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using VueCliMiddleware;
-using System.Threading.Tasks;
 
 namespace Expension
 {
@@ -43,16 +41,14 @@ namespace Expension
                     builder.SetIsOriginAllowed(origin =>
                     {
                         var host = new Uri(origin).Host;
-                        return host == "localhost" || host ==  "localhost:8080";
+                        return host == "localhost" || host ==  "localhost:8080" || host == "expension.azurewebsites.net" || host == "expension.azurewebsites.net:8080";
                     }).AllowAnyMethod().AllowAnyHeader();
-                    // builder.SetIsOriginAllowed(origin => new Uri(origin).Host == "expension.azurewebsites.net");
                 });
             });
 
             services.AddControllers();
-            var dupa = Configuration.GetValue<String>("ASPNETCORE_ConnectionString");
             services.AddDbContext<ExpensionDataContext>(options =>
-                options.UseSqlServer(Configuration.GetValue<String>("ASPNETCORE_ConnectionString")));
+                options.UseSqlServer(Configuration.GetValue<String>("ASPNETCORE_CONNECTIONSTRING")));
 
             services.AddScoped<IItemRepository, ItemRepository>();
             services.AddScoped<IBoughtItemRepository, BoughtItemRepository>();
@@ -68,11 +64,6 @@ namespace Expension
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
-            //services.AddSpaStaticFiles(configuration =>
-            //{
-            //    configuration.RootPath = "Expension.Front/dist";
-            //});
 
             services.AddAuthentication(options => {
                     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -111,8 +102,6 @@ namespace Expension
 
             app.UseHttpsRedirection();
 
-            //app.UseSpaStaticFiles();
-
             app.UseRouting();
 
             app.UseCors();
@@ -129,15 +118,6 @@ namespace Expension
                 });
                 endpoints.MapControllers();
             });
-
-            //app.UseSpa(spa =>
-            //{
-            //    spa.Options.SourcePath = "../Expension.Front";
-            //    if (env.IsDevelopment())
-            //    {
-            //        spa.UseVueCli("serve", 8080);
-            //    }
-            //});
         }
     }
 }
