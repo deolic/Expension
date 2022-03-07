@@ -114,7 +114,7 @@ namespace Expension
             {
                 endpoints.MapGet("/", async context =>
                 {
-                    await context.Response.WriteAsync("dupa");
+                    await context.Response.WriteAsync("This is a default page.");
                 });
                 endpoints.MapControllers();
             });
