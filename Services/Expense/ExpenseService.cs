@@ -38,6 +38,17 @@ namespace Expension.Services.Expense
             return expenses;
         }
 
+        public List<ExpenseDisplayedDataDto> GetExpensesForUserByMonth(int userId, int month, int year)
+        {
+            var expenses = _expenseRepository.FindByCondition(e => e.UserId == userId && e.ShoppingDate.Month == month && e.ShoppingDate.Year == year)
+                .OrderByDescending(e => e.ShoppingDate)
+                .Select(e => new ExpenseDisplayedDataDto(e.ExpenseId, e.ShoppingDate,
+                        e.BoughtItems.Select(bi =>
+                                new BoughtItemDisplayedDto(bi.BoughtItemId, bi.Price,
+                                    new ItemDisplayedDto(bi.Item.Name, bi.Item.ItemType))).ToList())).ToList();
+            return expenses;
+        }
+
         public ExpenseDisplayedDataDto GetExpenseById(int id)
         {
             var expense = _expenseRepository.FindSingleByCondition(e => e.ExpenseId == id);

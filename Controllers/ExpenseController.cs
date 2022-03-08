@@ -40,15 +40,26 @@ namespace Expension.Controllers
                : NotFound(new { message = "There is no expense with such id" });
         }
 
-        // GET api/expenses/user
+        // GET api/expenses/user/all
         [Authorize(Policy = "LoggedUserOnly")]
-        [HttpGet("user")]
+        [HttpGet("user/all")]
         public ActionResult<List<ExpenseDisplayedDataDto>> GetExpensesForUser()
         {
             if (_httpContextAccessor.HttpContext == null) return NotFound();
             var userId = StringConversion.ConvertToInt(_httpContextAccessor.HttpContext.User
                 .FindFirst(ClaimTypes.NameIdentifier)?.Value);
             return _expenseService.GetExpensesForUser(userId);
+        }
+
+        // GET api/expenses/user?month=3&year=2022
+        [Authorize(Policy = "LoggedUserOnly")]
+        [HttpGet("user")]
+        public ActionResult<List<ExpenseDisplayedDataDto>> GetExpensesForUserByMonth(int month, int year)
+        {
+            if (_httpContextAccessor.HttpContext == null) return NotFound();
+            var userId = StringConversion.ConvertToInt(_httpContextAccessor.HttpContext.User
+                .FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            return _expenseService.GetExpensesForUserByMonth(userId, month, year);
         }
 
         // POST api/expenses/
