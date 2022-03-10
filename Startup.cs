@@ -38,11 +38,13 @@ namespace Expension
             {
                 options.AddDefaultPolicy(builder =>
                 {
-                    builder.SetIsOriginAllowed(origin =>
-                    {
-                        var host = new Uri(origin).Host;
-                        return host == "localhost" || host ==  "localhost:8080" || host == "expension.azurewebsites.net" || host == "expension.azurewebsites.net:8080";
-                    }).AllowAnyMethod().AllowAnyHeader();
+                    builder.AllowAnyOrigin()
+                    //SetIsOriginAllowed(origin =>
+                    //{
+                    //    var host = new Uri(origin).Host;
+                    //    return host == "localhost" || host ==  "localhost:8443" || host == "expension.azurewebsites.net" || host == "expension.azurewebsites.net:8443";
+                    //})
+                    .AllowAnyMethod().AllowAnyHeader();
                 });
             });
 
@@ -76,7 +78,7 @@ namespace Expension
                     x.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["JWT:Key"])),
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["JWT_KEY"])),
                         ValidateIssuer = false,
                         ValidateAudience = false
                     };

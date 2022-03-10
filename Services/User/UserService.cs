@@ -53,7 +53,7 @@ namespace Expension.Services.User
                 }),
                 Expires = System.DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(
-                    new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["JWT:Key"])),
+                    new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["JWT_KEY"])),
                     SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor));
